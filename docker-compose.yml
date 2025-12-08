@@ -26,7 +26,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/investdb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cmp
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: Baranov533!
     depends_on:
