@@ -1,0 +1,47 @@
+logging.level.org.telegram: TRACE
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/cmp
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: Baranov533!
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: always
+
+
+#spring:
+#  sql:
+#    init:
+#      mode: always
+#  datasource:
+#    url: jdbc:h2:file:./db/cmp
+#        url: jdbc:h2:file:/app/db/invest;AUTO_SERVER=TRUE
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password: password
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console-cmp
+#      settings:
+#        web-allow-others: true
+
+telegram:
+  bot:
+    username: CMPServiecBot
+    token: 8270186805:AAHmYk4MULdRi4Hi3pg3iKz_w0-RB9_BUKw
+#    admin: 1484794404 #даша
+#    admin: 576127356 # я
+    admin: 473299603 #Макар
+    file: src/main/java/ru/telegramm/bot/file
