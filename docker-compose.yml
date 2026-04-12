@@ -1,36 +1,41 @@
-version: '3.8'
-services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: cmp
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Baranov533!
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  cat > docker-compose.yml <<EOF
+  version: '3.8'
+  services:
+    postgres:
+      image: postgres:15
+      environment:
+        POSTGRES_DB: cmp
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: Baranov533!
+      ports:
+        - "5433:5432"                  # Новый порт для PostgreSQL
+      volumes:
+        - postgres_data_cmp:/var/lib/postgresql/data
+      restart: unless-stopped
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "8082:80"
-    depends_on:
-      - postgres
+    pgadmin:
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@admin.com
+        PGADMIN_DEFAULT_PASSWORD: admin
+      ports:
+        - "8083:80"                    # Новый порт для pgAdmin
+      depends_on:
+        - postgres
+      restart: unless-stopped
 
-  cmp-app:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cmp
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: Baranov533!
-    depends_on:
-      - postgres
+    cmp-app:
+      build: .
+      ports:
+        - "8082:8080"                  # Новый порт для самого бота
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cmp
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: Baranov533!
+      depends_on:
+        - postgres
+      restart: unless-stopped
 
-volumes:
-  postgres_data:
+  volumes:
+    postgres_data_cmp:
+    EOF
