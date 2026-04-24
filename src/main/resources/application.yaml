@@ -43,7 +43,7 @@ telegram:
     username: testFloorSanding
 #    token: 8270186805:AAHmYk4MULdRi4Hi3pg3iKz_w0-RB9_BUKw
     token: 8527702929:AAHyr-BcODBhF2_sz7zie0Ryofc3G3ZXHZQ
-#    admin: 1484794404 #даша
-    admin: 576127356 # я
+    admin: 1484794404 #даша
+#    admin: 576127356 # я
 #    admin: 473299603 #Макар
     file: src/main/java/ru/telegramm/bot/file
