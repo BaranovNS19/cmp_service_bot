@@ -16,7 +16,7 @@ public class TextData {
     public static final String NOTIFICATION_MEDIA = "⚠\uFE0F Важно! Если будете прикладывать медиа файлы, " +
             "то прикладывайте только 1 фото или 1 видео! В случае, если будет приложено несколько файлов специалист " +
             "увидит только первый приложенный файл⚠\uFE0F";
-    public static final String START_TEXT_ADMIN = "Вас приветствует бот помошник! Вы можете просмотреть активные заявки и изменить статус заявки!";
+    public static final String START_TEXT_ADMIN = "Вас приветствует бот помощник! Вы можете просмотреть активные заявки и изменить статус заявки";
     public static final String NO_APPLICATIONS = "У вас отсутствуют раннее поданые заявки";
     public static final String NO_APPLICATION_ADMIN = "На текущий момент нет заявок в работе";
     public static final String NO_DONE_APPLICATION = "На текущий момент нет обработанных заявок";

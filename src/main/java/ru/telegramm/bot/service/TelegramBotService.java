@@ -1,8 +1,10 @@
 package ru.telegramm.bot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+@Slf4j
 @Service
 public class TelegramBotService extends TelegramLongPollingBot {
     private final String botUsername;
@@ -625,5 +628,19 @@ public class TelegramBotService extends TelegramLongPollingBot {
             sendInlineKeyboard(chatId);
         }
 
+    }
+
+    public void sendAnswerMessage(String text, Update update) {
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        AnswerCallbackQuery answer = new AnswerCallbackQuery();
+        answer.setCallbackQueryId(callbackQuery.getId());
+        answer.setText(text);
+        answer.setShowAlert(true);
+
+        try {
+            execute(answer);
+        } catch (TelegramApiException e) {
+            log.error("Ошибка: {}", e.getMessage());
+        }
     }
 }

@@ -43,9 +43,10 @@ public class CallBackService {
                 break;
             case "applicationByAdmin":
                 List<Application> applicationsByAdmin = applicationService.getApplicationsByStatus(StatusApplication.IN_PROCESS);
-                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.COUNT_APPLICATION_IN_PROCESS + applicationsByAdmin.size());
+//                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.COUNT_APPLICATION_IN_PROCESS + applicationsByAdmin.size());
                 if (applicationsByAdmin.isEmpty()) {
-                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_APPLICATION_ADMIN);
+//                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_APPLICATION_ADMIN);
+                    telegramBotService.sendAnswerMessage(TextData.NO_APPLICATION_ADMIN, update);
                 } else {
                     for (Application a : applicationsByAdmin) {
                         telegramBotService.sendApplicationInProgress(a);
@@ -53,15 +54,21 @@ public class CallBackService {
                 }
                 break;
             case "updateStatusApplication":
-                userService.updateUserState(update, BotState.UPDATE_ADMIN);
-                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.INPUT_NUMBER_APPLICATION);
+                List<Application> allApplications = applicationService.getAllApplication();
+                if (allApplications.isEmpty()){
+                    telegramBotService.sendAnswerMessage(TextData.NO_ALL_APPLICATION, update);
+                } else {
+                    userService.updateUserState(update, BotState.UPDATE_ADMIN);
+                    telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.INPUT_NUMBER_APPLICATION);
+                }
                 break;
 
             case "doneApplication":
                 List<Application> doneApplications = applicationService.getApplicationsByStatus(StatusApplication.PROCESSED);
-                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.COUNT_APPLICATION_DONE + doneApplications.size());
+//                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.COUNT_APPLICATION_DONE + doneApplications.size());
                 if (doneApplications.isEmpty()) {
-                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_DONE_APPLICATION);
+//                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_DONE_APPLICATION);
+                    telegramBotService.sendAnswerMessage(TextData.NO_DONE_APPLICATION, update);
                 } else {
                     for (Application a : doneApplications) {
                         telegramBotService.sendApplicationInProgress(a);
@@ -69,12 +76,13 @@ public class CallBackService {
                 }
                 break;
             case "allApplication":
-                List<Application> allApplications = applicationService.getAllApplication();
-                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.ALL_COUNT_APPLICATION + allApplications.size());
-                if (allApplications.isEmpty()) {
-                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_ALL_APPLICATION);
+                List<Application> allApplications12 = applicationService.getAllApplication();
+//                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.ALL_COUNT_APPLICATION + allApplications.size());
+                if (allApplications12.isEmpty()) {
+//                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_ALL_APPLICATION);
+                    telegramBotService.sendAnswerMessage(TextData.NO_ALL_APPLICATION, update);
                 } else {
-                    for (Application a : allApplications) {
+                    for (Application a : allApplications12) {
                         telegramBotService.sendApplicationInProgress(a);
                     }
                 }
