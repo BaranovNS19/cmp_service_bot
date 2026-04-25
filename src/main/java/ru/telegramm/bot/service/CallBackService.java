@@ -19,33 +19,39 @@ public class CallBackService {
     private final TelegramBotService telegramBotService;
 
     @Autowired
-    public CallBackService(UserService userService, ApplicationService applicationService, @Lazy TelegramBotService telegramBotService) {
+    public CallBackService(UserService userService,
+                           ApplicationService applicationService,
+                           @Lazy TelegramBotService telegramBotService) {
         this.userService = userService;
         this.applicationService = applicationService;
         this.telegramBotService = telegramBotService;
     }
 
     public void handleCallback(String callbackData, Update update) throws TelegramApiException {
+        // Получаем chatId из callbackQuery
+        Long chatId = getChatIdFromUpdate(update);
+        if (chatId == null) return;
+
         switch (callbackData) {
             case "answerQuestionsAndSubmitAnApplication":
                 userService.updateUserState(update, BotState.START_OF_THE_SURVEY);
                 break;
+
             case "myApplications":
-                List<Application> applications = applicationService.getApplicationsByChatId(telegramBotService.getChatId());
-                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.COUNT_APPLICATION + applications.size());
+                List<Application> applications = applicationService.getApplicationsByChatId(chatId);
+                telegramBotService.sendFormattedMessage(chatId, TextData.COUNT_APPLICATION + applications.size());
                 if (applications.isEmpty()) {
-                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_APPLICATIONS);
+                    telegramBotService.sendMessage(chatId, TextData.NO_APPLICATIONS);
                 } else {
                     for (Application a : applications) {
-                        telegramBotService.sendApplicationToUser(telegramBotService.getChatId(), a);
+                        telegramBotService.sendApplicationToUser(chatId, a);
                     }
                 }
                 break;
+
             case "applicationByAdmin":
                 List<Application> applicationsByAdmin = applicationService.getApplicationsByStatus(StatusApplication.IN_PROCESS);
-//                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.COUNT_APPLICATION_IN_PROCESS + applicationsByAdmin.size());
                 if (applicationsByAdmin.isEmpty()) {
-//                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_APPLICATION_ADMIN);
                     telegramBotService.sendAnswerMessage(TextData.NO_APPLICATION_ADMIN, update);
                 } else {
                     for (Application a : applicationsByAdmin) {
@@ -53,21 +59,20 @@ public class CallBackService {
                     }
                 }
                 break;
+
             case "updateStatusApplication":
                 List<Application> allApplications = applicationService.getAllApplication();
-                if (allApplications.isEmpty()){
+                if (allApplications.isEmpty()) {
                     telegramBotService.sendAnswerMessage(TextData.NO_ALL_APPLICATION, update);
                 } else {
                     userService.updateUserState(update, BotState.UPDATE_ADMIN);
-                    telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.INPUT_NUMBER_APPLICATION);
+                    telegramBotService.sendFormattedMessage(chatId, TextData.INPUT_NUMBER_APPLICATION);
                 }
                 break;
 
             case "doneApplication":
                 List<Application> doneApplications = applicationService.getApplicationsByStatus(StatusApplication.PROCESSED);
-//                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.COUNT_APPLICATION_DONE + doneApplications.size());
                 if (doneApplications.isEmpty()) {
-//                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_DONE_APPLICATION);
                     telegramBotService.sendAnswerMessage(TextData.NO_DONE_APPLICATION, update);
                 } else {
                     for (Application a : doneApplications) {
@@ -75,11 +80,10 @@ public class CallBackService {
                     }
                 }
                 break;
+
             case "allApplication":
                 List<Application> allApplications12 = applicationService.getAllApplication();
-//                telegramBotService.sendFormattedMessage(telegramBotService.getChatId(), TextData.ALL_COUNT_APPLICATION + allApplications.size());
                 if (allApplications12.isEmpty()) {
-//                    telegramBotService.sendMessage(telegramBotService.getChatId(), TextData.NO_ALL_APPLICATION);
                     telegramBotService.sendAnswerMessage(TextData.NO_ALL_APPLICATION, update);
                 } else {
                     for (Application a : allApplications12) {
@@ -88,6 +92,14 @@ public class CallBackService {
                 }
                 break;
         }
+    }
 
+    private Long getChatIdFromUpdate(Update update) {
+        if (update.hasCallbackQuery() && update.getCallbackQuery().getMessage() != null) {
+            return update.getCallbackQuery().getMessage().getChatId();
+        } else if (update.hasMessage() && update.getMessage() != null) {
+            return update.getMessage().getChatId();
+        }
+        return null;
     }
 }
